@@ -1,3 +1,5 @@
+dragula([...document.querySelectorAll(".cards")]);
+
 const docTitle = document.querySelector("#title");
 docTitle.addEventListener("input", function () {
     const tempSpan = document.createElement("span");
