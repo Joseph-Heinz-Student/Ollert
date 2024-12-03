@@ -1,4 +1,11 @@
-dragula([...document.querySelectorAll(".cards")]);
+const drake = dragula([...document.querySelectorAll(".cards"),document.querySelector("#sections")]);
+drake.on("drop", (el, source, target) => {
+    console.log(el, source, target)
+    if(el instanceof HTMLDivElement && source.id === "sections"){
+        drake.cancel();
+    }
+
+});
 
 const docTitle = document.querySelector("#title");
 docTitle.addEventListener("input", function () {
