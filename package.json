@@ -1,9 +1,12 @@
 {
-  "name": "ollert",
-  "version": "1.0.0",
-  "description": "A project management web application",
-  "main": "src/index.js",
-  "scripts": {},
-  "author": "",
-  "license": "ISC"
+    "name": "ollert",
+    "version": "1.0.0",
+    "description": "A project management web application",
+    "main": "src/index.js",
+    "scripts": {},
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dragula": "^3.7.3"
+    }
 }
