@@ -2,8 +2,13 @@
   "name": "ollert",
   "version": "1.0.0",
   "description": "A project management web application",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {},
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.46.2",
+    "dotenv": "^16.4.6",
+    "express": "^4.21.1"
+  }
 }
