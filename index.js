@@ -11,6 +11,7 @@ const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseURL, supabaseKey);
 
 app.use(express.json());
+app.use(express.static("static"));
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/static/index.html"));
