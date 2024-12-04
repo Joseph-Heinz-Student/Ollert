@@ -71,7 +71,7 @@ function genJSONFromHTML(html) {
 
         const cards = [...[...elem.children][1].children];
         cards.forEach((card) => {
-            const defaultCard = {name: "", desc: ""};
+            const defaultCard = { name: "", desc: "" };
             const cardChildren = [...card.children];
 
             // generate card JSON from <h3> and <p>
@@ -101,4 +101,42 @@ const testingJson = {
     ],
 };
 
-loadJSON(testingJson)
+// Extract the UUID from the URL query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const uuid = urlParams.get('id'); // Make sure your query parameter is 'id'
+let data = {};
+console.log('Variable from server:', uuid);
+
+// Define an async function to fetch data
+async function getData() {
+    if (!uuid) {
+        console.error('No UUID found in the URL');
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:5050/api/get/${uuid}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        }
+
+        const respData = await response.json();
+        console.log('Fetched data:', respData.data);
+        data = respData.data;
+        loadJSON(data);
+
+        // You can now use `data` to update your page
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Call the function to fetch data
+getData();
+
