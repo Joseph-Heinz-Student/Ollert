@@ -112,6 +112,7 @@ main > ul {
     overflow-x: scroll;
     flex-grow: initial;
     overflow: hidden;
+    width: 100%;
 }
 
 .section {
