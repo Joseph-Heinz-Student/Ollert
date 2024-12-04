@@ -146,6 +146,10 @@ main > ul {
     overflow: hidden;
 }
 
+.section-header > input {
+    max-width: 75%;
+}
+
 .cards {
     height: 100%;
     overflow-y: scroll;
@@ -157,7 +161,7 @@ main > ul {
     align-items: center;
 }
 
-.cards div {
+.cards > div {
     border: 1px solid rgba(255, 255, 255, 0.05);
     background-color: #292c3a;
     width: 95%;
@@ -167,25 +171,40 @@ main > ul {
     border-radius: 8px;
     cursor: pointer;
     transition: 250ms;
+    position: relative;
 }
 
-.cards div:last-child {
+.cards > div > div {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    transform: translate(0,-58%);
+    right: 10px;
+    opacity: 0;
+    transition: 250ms;
+}
+
+.cards > div:hover > div {
+    opacity: 1;
+}
+
+.cards > div:last-child {
     margin-bottom: 55px;
 }
 
-.cards div:hover {
+.cards > div:hover {
     background-color: #303344;
 }
 
-.cards div * {
+.cards > div * {
     user-select: none;
 }
 
-.cards div h3 {
+.cards > div h3 {
     margin: 10px 0 0 10px;
 }
 
-.cards div p {
+.cards > div p {
     margin: 0px 0 10px 10px;
 }
 
