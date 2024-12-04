@@ -1,4 +1,18 @@
-dragula([...document.querySelectorAll(".cards")]);
+const drakeCards = dragula([...document.querySelectorAll('.cards')], {
+    accepts: function (el, target) {
+        return target.classList.contains('cards');
+    }
+});
+
+const drakeSections = dragula([document.getElementById('sections')], {
+    moves: function (el, source, handle) {
+        return handle.classList.contains('section-header');
+    },
+    accepts: function (el, target) {
+        return target.id === 'sections';
+    }
+});
+
 
 const docTitle = document.querySelector("#title");
 docTitle.addEventListener("input", function () {
