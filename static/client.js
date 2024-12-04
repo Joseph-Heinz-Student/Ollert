@@ -2,6 +2,9 @@ const drakeCards = dragula([...document.querySelectorAll(".cards")], {
     accepts: function (el, target) {
         return target.classList.contains("cards");
     },
+}).on("drop", function () {
+    let json = genJSONFromHTML(document.getElementById("sections"));
+    loadJSON(json);
 });
 
 const drakeSections = dragula([document.getElementById("sections")], {
@@ -46,7 +49,40 @@ function loadJSON(json) {
         result += "</div></li>";
     }
     document.getElementById("sections").innerHTML = result;
-    drakeCards.containers = [...document.querySelectorAll(".cards")]
+    drakeCards.containers = [...document.querySelectorAll(".cards")];
+    docTitle.dispatchEvent(new Event("input"));
+}
+
+function genJSONFromHTML(html) {
+    const defaultJSON = {
+        title: document.getElementById("title").value,
+        boards: [
+
+        ]
+    };
+    [...html.children].forEach((elem) => {
+        const board = {
+            name: "",
+            contents: []
+        }
+
+        const title = [...elem.children][0].firstElementChild.value;
+        board.name = title;
+
+        const cards = [...[...elem.children][1].children];
+        cards.forEach((card) => {
+            const defaultCard = {name: "", desc: ""};
+            const cardChildren = [...card.children];
+
+            // generate card JSON from <h3> and <p>
+            defaultCard.name = cardChildren[0].textContent;
+            defaultCard.desc = cardChildren[1].textContent;
+            board.contents.push(defaultCard);
+        });
+
+        defaultJSON.boards.push(board);
+    });
+    return defaultJSON;
 }
 
 const testingJson = {
