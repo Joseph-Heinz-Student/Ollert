@@ -19,9 +19,8 @@ const drakeCards = dragula([...document.querySelectorAll(".cards")], {
   let json = genJSONFromHTML(document.getElementById("sections"));
   loadJSON(json);
   try {
-    console.log(uuid)
-    const { data, error } = await Supabase
-      .from("boards")
+    console.log(uuid);
+    const { data, error } = await Supabase.from("boards")
       .update({ data: json })
       .eq("id", uuid);
 
@@ -127,10 +126,35 @@ const testingJson = {
   ],
 };
 
+// create a board if there isnt one sent from the uri encoding
+async function createBoard() {
+  try {
+    const response = await fetch("http://localhost:5050/api/create_board", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Board created successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Error creating board:", error);
+  }
+}
+
 // Define an async function to fetch data
 async function getData() {
   if (!uuid) {
     console.error("No UUID found in the URL");
+    const data = await createBoard();
+    newUuid = data.data[0].id;
+    window.location = `http://localhost:5050/?id=${encodeURIComponent(newUuid)}`;
     return;
   }
 
