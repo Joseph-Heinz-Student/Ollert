@@ -231,6 +231,7 @@ document.getElementById("createSection").onclick = function () {
       <div class="cards"></div>
       `;
       document.getElementById("sections").appendChild(section);
+      section.querySelector(`div > input`).addEventListener("change", update);
 
       const addButton = section.querySelector("div > i:nth-child(3)");
       addButton.onclick = function () {
@@ -298,6 +299,7 @@ function loadJSON(json) {
     <div class="cards"></div>
     `;
     sections.appendChild(section);
+    section.querySelector(`div > input`).addEventListener("change", update);
 
     const addButton = section.querySelector("div > i:nth-child(3)");
     const deleteButton = section.querySelector("div > i:nth-child(2)");
@@ -323,10 +325,12 @@ function loadJSON(json) {
               function (x, y) {
                 card.querySelector("h3").innerHTML = x;
                 card.querySelector("p").innerHTML = y;
+                update();
               }
             );
           });
           drakeCards.containers = [...document.querySelectorAll(".cards")];
+          update();
         }
       );
     };
@@ -382,6 +386,8 @@ async function update(sectionID = null) {
   drakeCards.containers = [...document.querySelectorAll(".cards")];
   if(toRemove) toRemove.remove();
 }
+
+
 
 /*displayModal(
     ["First Input", true],
