@@ -368,14 +368,17 @@ function loadJSON(json) {
 
 const deletionObserver = new MutationObserver((list) => {
     for (let change of list) {
-        if (change.type !== "childList") {
+        if (change.type === "childList") {
             let wasSomethingDeleted = false;
             change.removedNodes.forEach((item) => {
                 if (item.nodeType === 1) {
                     wasSomethingDeleted = true;
                 }
             })
-            if (wasSomethingDeleted) update();
+            if (wasSomethingDeleted) {
+                deletionObserver.disconnect()
+                update();
+            };
         }
     }
 });
@@ -396,6 +399,9 @@ async function update(sectionID) {
         console.error("Unexpected error:", err);
     }
     drakeCards.containers = [...document.querySelectorAll(".cards")];
+    deletionObserver.observe(document.getElementById("sections"), {
+        childList: true,
+    });
 }
 
 /*displayModal(
