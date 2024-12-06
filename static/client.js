@@ -1,5 +1,6 @@
 const { createClient } = supabase;
 
+const docTitle = document.querySelector("#title");
 const supabaseANONKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnamZ1am9oY29uYmhuaGZ1dXlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMxNDg0MzMsImV4cCI6MjA0ODcyNDQzM30.OPTZLHywuAmnI8iuE61ztZd5HF75li_g54dQYSinpTM";
 const supabaseURL = "https://hgjfujohconbhnhfuuyd.supabase.co";
@@ -10,19 +11,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const uuid = urlParams.get("id"); // Make sure your query parameter is 'id'
 let initData = {};
 console.log("Variable from server:", uuid);
-
-async function update() {
-  let json = genJSONFromHTML(document.getElementById("sections"));
-  loadJSON(json);
-  try {
-    console.log(uuid);
-    const { data, error } = await Supabase.from("boards")
-      .update({ data: json })
-      .eq("id", uuid);
-  } catch (err) {
-    console.error("Unexpected error:", err);
-  }
-}
 
 const drakeCards = dragula([...document.querySelectorAll(".cards")], {
   accepts: function (el, target) {
@@ -37,26 +25,8 @@ const drakeSections = dragula([document.getElementById("sections")], {
   accepts: function (el, target) {
     return target.id === "sections";
   },
-}).on("drop", async function () {
-  let json = genJSONFromHTML(document.getElementById("sections"));
-  loadJSON(json);
-  try {
-    console.log(uuid);
-    const { data, error } = await Supabase.from("boards")
-      .update({ data: json })
-      .eq("id", uuid);
+}).on("drop", update);
 
-    if (error) {
-      console.error("Error updating data:", error);
-    } else {
-      console.log("Updated data:", data);
-    }
-  } catch (err) {
-    console.error("Unexpected error:", err);
-  }
-});
-
-const docTitle = document.querySelector("#title");
 docTitle.addEventListener("input", function () {
   const tempSpan = document.createElement("span");
   tempSpan.style.position = "absolute";
@@ -71,12 +41,16 @@ docTitle.addEventListener("input", function () {
 
 docTitle.dispatchEvent(new Event("input"));
 
-function genJSONFromHTML(html) {
+function genJSONFromHTML(html, sectionID) {
   const defaultJSON = {
     title: document.getElementById("title").value,
     boards: [],
   };
   [...html.children].forEach((elem) => {
+    if(elem.id == `selID${sectionID}`){
+      elem.remove();
+      return;
+    }
     const board = {
       name: "",
       contents: [],
@@ -234,13 +208,13 @@ document.getElementById("createSection").onclick = function () {
       section.className = "section";
       section.id = `selID${sectionID}`;
       section.innerHTML = `
-              <div class="section-header">
-                  <input type="text" value="${x}" />
-                  <i class="fa-solid fa-trash"></i>
-                  <i class="fa-solid fa-plus"></i>
-              </div>
-              <div class="cards"></div>
-          `;
+      <div class="section-header">
+      <input type="text" value="${x}" />
+      <i class="fa-solid fa-trash"></i>
+      <i class="fa-solid fa-plus"></i>
+      </div>
+      <div class="cards"></div>
+      `;
       document.getElementById("sections").appendChild(section);
 
       const addButton = section.querySelector("div > i:nth-child(3)");
@@ -256,9 +230,9 @@ document.getElementById("createSection").onclick = function () {
             const card = document.createElement("div");
             card.id = `selID${cardID}`;
             card.innerHTML = `
-                          <h3>${x}</h3>
-                          <p>${y}</p>
-                      `;
+            <h3>${x}</h3>
+            <p>${y}</p>
+            `;
             section.querySelector(".cards").appendChild(card);
 
             card.onclick = function () {
@@ -269,18 +243,21 @@ document.getElementById("createSection").onclick = function () {
                 function (x, y) {
                   card.querySelector("h3").innerHTML = x;
                   card.querySelector("p").innerHTML = y;
+                  update();
                 }
               );
             };
 
             drakeCards.containers = [...document.querySelectorAll(".cards")];
+            update();
           }
         );
       };
-
+      drakeCards.containers = [...document.querySelectorAll(".cards")];
+      update();
       const deleteButton = section.querySelector("div > i:nth-child(2)");
       deleteButton.onclick = function () {
-        section.remove();
+        update(sectionID);
       };
     }
   );
@@ -298,13 +275,13 @@ function loadJSON(json) {
     section.className = "section";
     section.id = `selID${sectionID}`;
     section.innerHTML = `
-          <div class="section-header">
-              <input type="text" value="${json.boards[i].name}" />
-              <i class="fa-solid fa-trash"></i>
-              <i class="fa-solid fa-plus"></i>
-          </div>
-          <div class="cards"></div>
-      `;
+    <div class="section-header">
+    <input type="text" value="${json.boards[i].name}" />
+    <i class="fa-solid fa-trash"></i>
+    <i class="fa-solid fa-plus"></i>
+    </div>
+    <div class="cards"></div>
+    `;
     sections.appendChild(section);
 
     const addButton = section.querySelector("div > i:nth-child(3)");
@@ -349,9 +326,9 @@ function loadJSON(json) {
       const card = document.createElement("div");
       card.id = `selID${cardID}`;
       card.innerHTML = `
-              <h3>${json.boards[i].contents[o].name}</h3>
-              <p>${json.boards[i].contents[o].desc}</p>
-          `;
+      <h3>${json.boards[i].contents[o].name}</h3>
+      <p>${json.boards[i].contents[o].desc}</p>
+      `;
       section.querySelector(".cards").appendChild(card);
 
       card.addEventListener("click", function () {
@@ -372,7 +349,19 @@ function loadJSON(json) {
   docTitle.dispatchEvent(new Event("input"));
 }
 
-loadJSON(testingJson);
+async function update(sectionID) {
+  console.log(sectionID)
+  let json = genJSONFromHTML(document.getElementById("sections"),sectionID);
+  loadJSON(json);
+  try {
+    const { data, error } = await Supabase.from("boards")
+      .update({ data: json })
+      .eq("id", uuid);
+  } catch (err) {
+    console.error("Unexpected error:", err);
+  }
+  drakeCards.containers = [...document.querySelectorAll(".cards")];
+}
 
 /*displayModal(
     ["First Input", true],
