@@ -11,11 +11,7 @@ const uuid = urlParams.get("id"); // Make sure your query parameter is 'id'
 let initData = {};
 console.log("Variable from server:", uuid);
 
-const drakeCards = dragula([...document.querySelectorAll(".cards")], {
-  accepts: function (el, target) {
-    return target.classList.contains("cards");
-  },
-}).on("drop", async function () {
+async function update() {
   let json = genJSONFromHTML(document.getElementById("sections"));
   loadJSON(json);
   try {
@@ -32,7 +28,13 @@ const drakeCards = dragula([...document.querySelectorAll(".cards")], {
   } catch (err) {
     console.error("Unexpected error:", err);
   }
-});
+}
+
+const drakeCards = dragula([...document.querySelectorAll(".cards")], {
+  accepts: function (el, target) {
+    return target.classList.contains("cards");
+  },
+}).on("drop", update);
 
 const drakeSections = dragula([document.getElementById("sections")], {
   moves: function (el, source, handle) {
@@ -154,7 +156,9 @@ async function getData() {
     console.error("No UUID found in the URL");
     const data = await createBoard();
     newUuid = data.data[0].id;
-    window.location = `http://localhost:5050/?id=${encodeURIComponent(newUuid)}`;
+    window.location = `http://localhost:5050/?id=${encodeURIComponent(
+      newUuid
+    )}`;
     return;
   }
 
@@ -193,6 +197,8 @@ const channel = Supabase.channel("boards")
     }
   )
   .subscribe();
+
+document.querySelector("#title").addEventListener("change", update);
 
 // Call the function to fetch data
 getData();
