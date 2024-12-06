@@ -25,19 +25,27 @@
         <h1>Ollert</h1>
         <input id="title" type="text" value="Untitled Project" maxlength="45" id="title"/>
         <nav>
-            <button><i class="fa-solid fa-ellipsis"></i></button>
-            <button><i class="fa-solid fa-plus"></i></button>
-            <button><i class="fa-solid fa-filter"></i></button>
-            <button><i class="fa-solid fa-unlock"></i></button>
+            <button disabled><i class="fa-solid fa-ellipsis"></i></button>
+            <button id="createSection"><i class="fa-solid fa-plus"></i></button>
+            <button disabled><i class="fa-solid fa-filter"></i></button>
+            <button disabled><i class="fa-solid fa-unlock"></i></button>
         </nav>
         <button id="share">Share</button>
     </aside>
     <main>
         <ul id="sections">
+            
         </ul>
     </main>
+    <div id="modal">
+        <div>
+            <input type="text" placeholder="Input1">
+            <input type="text" placeholder="Input2">
+            <button>Button</button>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
-    <script src="./client.js"></script>
+    <script src="./client.js" defer></script>
 </body>
 
 </html>
