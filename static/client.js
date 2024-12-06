@@ -201,7 +201,7 @@ function displayModal(input1Data, input2Data, buttonData, callback) {
 
 document.getElementById("share").onclick = function () {
   displayModal(
-    ["First Input", true, `link here`],
+    ["First Input", true, `http://localhost:5050/share/${uuid}`],
     ["", false, "Copy the Link Above"],
     "Close",
     function (x, y) {}
