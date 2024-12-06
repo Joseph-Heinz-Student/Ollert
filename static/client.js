@@ -208,10 +208,10 @@ const input2 = document.querySelector("#modal > div > input:nth-child(2)");
 const button = document.querySelector("#modal button");
 
 function displayModal(input1Data, input2Data, buttonData, callback) {
-    input1.value = "";
+    input1.value = input1Data[2] ? input1Data[2] : "";
     input1.placeholder = input1Data[0];
     input1.disabled = !input1Data[1];
-    input2.value = "";
+    input2.value = input2Data[2] ? input2Data[2] : "";
     input2.placeholder = input2Data[0];
     input2.disabled = !input2Data[1];
     button.innerHTML = buttonData;
@@ -223,6 +223,15 @@ function displayModal(input1Data, input2Data, buttonData, callback) {
     }
     button.addEventListener("click", clickfunc);
 }
+
+document.getElementById("share").onclick = function () {
+    displayModal(
+        ["First Input", true, `link here`],
+        ["", false, "Copy the Link Above"],
+        "Close",
+        function (x, y) {}
+    );
+};
 
 let currentid = 1;
 
