@@ -105,7 +105,7 @@ const testingJson = {
 // create a board if there isnt one sent from the uri encoding
 async function createBoard() {
   try {
-    const response = await fetch("http://localhost:5050/api/create_board", {
+    const response = await fetch(`https://${window.location.host}/api/create_board`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -130,14 +130,14 @@ async function getData() {
     console.error("No UUID found in the URL");
     const data = await createBoard();
     newUuid = data.data[0].id;
-    window.location = `http://localhost:5050/?id=${encodeURIComponent(
+    window.location = `https://${window.location.host}/?id=${encodeURIComponent(
       newUuid
     )}`;
     return;
   }
 
   try {
-    const response = await fetch(`http://localhost:5050/api/get/${uuid}`, {
+    const response = await fetch(`https://${window.location.host}/api/get/${uuid}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -201,7 +201,7 @@ function displayModal(input1Data, input2Data, buttonData, callback) {
 
 document.getElementById("share").onclick = function () {
   displayModal(
-    ["First Input", true, `http://localhost:5050/share/${uuid}`],
+    ["First Input", true, `https://${window.location.host}/share/${uuid}`],
     ["", false, "Copy the Link Above"],
     "Close",
     function (x, y) {}
